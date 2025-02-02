@@ -2,7 +2,7 @@ import json, yaml
 import os
 import difflib
 from InquirerPy import inquirer
-from model_calls import available_calls
+from .model_calls import available_calls
 
 red = lambda text: f"\033[38;2;235;20;20m{text}\033[38;2;255;255;255m"
 green = lambda text: f"\033[38;2;20;235;20m{text}\033[38;2;255;255;255m"

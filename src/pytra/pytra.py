@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import sys
 import json
@@ -9,8 +8,9 @@ import difflib
 import subprocess
 import datetime
 import yaml
-import model_calls
-import pytra_tui
+from .model_calls import generic_call
+from .pytra_tui import tui
+
 
 def call_llm_for_summary(diff_text):
     """
@@ -26,7 +26,7 @@ def call_llm_for_summary(diff_text):
 The following is the diff generated from a new version of a code file. If there are changes to scalar parameters, changes in choices of functions (such as loss functions) or changes in status of flags - note them first before any other change. Summarize the diff succinctly and accurately:
 {diff_text}
 """    
-    return model_calls.generic_call(prompt, model)
+    return generic_call(prompt, model)
 
 # --------------------------------------------------------------------
 # Main pytra code
@@ -44,10 +44,30 @@ def main():
         pytra.py script.py --recursive  # Track all files in the current directory and subdirectories.
         pytra.py --tui  # Launch the pytra TUI.
     """
+    # pytra conf should be in hidden folder in the user directory
+    conf_path = os.path.join(os.path.expanduser("~"), ".pytra")
+    # make sure the conf folder exists
+    if not os.path.exists(conf_path):
+        os.makedirs(conf_path)
+    # make sure the conf file exists
+    conf_file_path = os.path.join(conf_path, "pytra_conf.yaml")
+    if not os.path.exists(conf_file_path):
+        default_config = {
+            "model": "Meta Llama 3.3",
+            "summary": False,
+            "wide": False,
+            "recursive": False,
+        }
+        with open(conf_file_path, "w") as f:
+            yaml.dump(default_config, f)
+    global conf
+    global model
+    conf = yaml.safe_load(open(conf_file_path, "r"))
+    model = conf["model"]
 
     # if no arguments, run tui with cwd
     if len(sys.argv) == 1:
-        pytra_tui.tui(os.getcwd())
+        tui(os.getcwd())
         return
     
     parser = argparse.ArgumentParser(
@@ -64,8 +84,13 @@ def main():
     parser.add_argument("-t", "--tui", action="store_true", 
                         help="If set, launch the pytra TUI.")
     args, unknown_args = parser.parse_known_args()
-
     script_to_run = args.script_path
+    
+    # check if script_path is empty, then path is in unknown args
+    if not args.script_path:
+        script_to_run = unknown_args[0]
+        unknown_args = unknown_args[1:]
+
     # working dir is the directory of the script to run if given, else cwd
     if script_to_run:
         wd = os.path.dirname(script_to_run)
@@ -74,7 +99,7 @@ def main():
 
     # If TUI is requested, launch it
     if args.tui:
-        pytra_tui.tui(wd)
+        tui(wd)
         return
 
     generate_summary = args.summary
@@ -152,16 +177,16 @@ def main():
         # No diffs on first run
         diff_full = "No previous version found. First run."
         log_entry["diff_full"] = diff_full
-        log_entry["diff_summary"] = "No changes (first run)."
+        log_entry["diff_summary"] = "No changes logged (first run)."
     else:
-        log_entry["diff_full"] = diff_full
         # Potentially call LLM for summary if requested
-        if generate_summary:
+        if generate_summary and diff_full != "":
             summary_text = call_llm_for_summary(diff_full)
             log_entry["diff_summary"] = summary_text
         else:
             # Just store a placeholder or empty
             log_entry["diff_summary"] = "No summary requested."
+        log_entry["diff_full"] = "No changes logged."
 
     # Append the log entry to diffs.jsonl
     with open(diffs_file, 'a', encoding='utf-8') as df:
@@ -188,26 +213,5 @@ def main():
     sys.exit(completed_proc.returncode)
 
 if __name__ == "__main__":
-    # pytra conf should be in hidden folder in the user directory
-    conf_path = os.path.join(os.path.expanduser("~"), ".pytra")
-    # make sure the conf folder exists
-    if not os.path.exists(conf_path):
-        os.makedirs(conf_path)
-    # make sure the conf file exists
-    conf_file_path = os.path.join(conf_path, "pytra_conf.yaml")
-    if not os.path.exists(conf_file_path):
-        default_config = {
-            "model": "Meta Llama 3.3",
-            "summary": False,
-            "wide": False,
-            "recursive": False,
-        }
-        with open(conf_file_path, "w") as f:
-            yaml.dump(default_config, f)
-    global conf
-    global model
-    conf = yaml.safe_load(open(conf_file_path, "r"))
-    model = conf["model"]
-
     main()
 

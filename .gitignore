@@ -1,0 +1,4 @@
+dist/
+src/pytra/__pycache__/
+src/pytra.egg-info/
+__pycache__/
