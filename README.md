@@ -16,14 +16,6 @@ Current version: 0.1.1
 
 ## Installation
 
-To install the required dependencies, run:
-
-```sh
-pip install -r requirements.txt
-```
-
-Then install pydift using pip:
-
 ```sh
 pip install pydift
 ```
