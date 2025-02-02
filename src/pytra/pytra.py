@@ -186,7 +186,10 @@ def main():
         else:
             # Just store a placeholder or empty
             log_entry["diff_summary"] = "No summary requested."
-        log_entry["diff_full"] = "No changes logged."
+        if diff_full == "":
+            log_entry["diff_full"] = "No changes logged."
+        else:
+            log_entry["diff_full"] = diff_full
 
     # Append the log entry to diffs.jsonl
     with open(diffs_file, 'a', encoding='utf-8') as df:
