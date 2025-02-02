@@ -22,6 +22,12 @@ To install the required dependencies, run:
 pip install -r requirements.txt
 ```
 
+Then install pydift using pip:
+
+```sh
+pip install pydift
+```
+
 ## Usage
 ### Command Line Interface (CLI)
 You can use pydift from the command line to track and run your scripts. Here are some examples:
