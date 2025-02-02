@@ -1,8 +1,8 @@
-# pytra
+# pydift
 
-pytra is a simple version-tracking tool for research code development. It allows you to track changes in your code, generate diffs, and even reconstruct code at specific points in time. Additionally, it can summarize diffs using various language models.
+pydift is a simple version-tracking tool for research code development. It allows you to track changes in your code, generate diffs, and even reconstruct code at specific points in time. Additionally, it can summarize diffs using various language models.
 
-![pytra TUI](figures/demo.gif)
+![pydift TUI](figures/demo.gif)
 
 ## Features
 
@@ -22,43 +22,43 @@ pip install -r requirements.txt
 
 ## Usage
 ### Command Line Interface (CLI)
-You can use pytra from the command line to track and run your scripts. Here are some examples:
+You can use pydift from the command line to track and run your scripts. Here are some examples:
 ```sh
 # Track and run a script
-python pytra.py script.py
+python pydift.py script.py
 
 # Track and run a script, and generate a summary of the diff
-python pytra.py script.py --summary
+python pydift.py script.py --summary
 
 # Track all files in the current directory
-python pytra.py script.py --wide
+python pydift.py script.py --wide
 
 # Track all files in the current directory and subdirectories
-python pytra.py script.py --recursive
+python pydift.py script.py --recursive
 
-# Launch the pytra TUI
-python pytra.py --tui
+# Launch the pydift TUI
+python pydift.py --tui
 ```
 
 ### Text User Interface (TUI)
-pytra also provides an interactive TUI for managing diffs and configurations. To launch the TUI, run:
+pydift also provides an interactive TUI for managing diffs and configurations. To launch the TUI, run:
 ```sh
-python pytra.py --tui
+python pydift.py --tui
 ```
 or simply:
 ```sh
-python pytra.py -t
+python pydift.py -t
 ```
 
 In the TUI, you can:
 
 - Scroll between diffs of code runs.
 - Select a diff to view or reconstruct the code at that point in time.
-- Configure pytra settings such as the language model, summary generation, and file tracking options.
+- Configure pydift settings such as the language model, summary generation, and file tracking options.
 
 ## Configuration
 
-pytra uses a configuration file located at `~/.pytra/pytra_conf.yaml`. The default configuration is:
+pydift uses a configuration file located at `~/.pydift/pydift_conf.yaml`. The default configuration is:
 ```yaml
 model: "Meta Llama 3.3"
 summary: False
@@ -69,12 +69,12 @@ You can modify these settings directly in the configuration file or through the 
 
 ### Adding models
 
-By default, pytra is configured with the following models:
+By default, pydift is configured with the following models:
 - OpenAI GPT-4o
 - Meta Llama 3.3
 - Google Gemini 2.0 Flash (Exp)
 
-You can add new models to be used by pytra (and then configure appropriately through the TUI), by adding the details of the cURL request to `model_conf.yaml` (in `~/.pytra`).
+You can add new models to be used by pydift (and then configure appropriately through the TUI), by adding the details of the cURL request to `model_conf.yaml` (in `~/.pydift`).
 For example,
 ```yaml
 OpenAI GPT-4o:
@@ -107,16 +107,16 @@ Note the following sections:
 - input_path: This indicates in which part of the data portion of the request JSON, the prompt will be inserted (in the above example, in data["messages"][0]["content"])
 
 ## Example
-Here is an example of how to use pytra:
+Here is an example of how to use pydift:
 
 1. Create a Python script example.py:
 ```python
 print("Hello, world!")
 ```
 
-2. Track the script using pytra:
+2. Track the script using pydift:
 ```python
-python pytra.py example.py
+pydift example.py
 ```
 
 3. Modify the script to print a different message:
@@ -126,12 +126,12 @@ print("Goodbye, world!")
 
 4. Track the script again:
 ```python
-python pytra.py example.py
+pydift example.py
 ```
 
-5. Launch the pytra TUI:
+5. Launch the pydift TUI:
 ```python
-python pytra.py --tui
+pydift --tui
 ```
 
 ## License

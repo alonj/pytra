@@ -4,7 +4,7 @@ from copy import deepcopy
 global available_calls
 global model_confs
 
-model_conf_path = os.path.join(os.path.expanduser("~"), ".pytra/model_conf.yaml")
+model_conf_path = os.path.join(os.path.expanduser("~"), ".pydift/model_conf.yaml")
 with open(model_conf_path, "r") as f:
     model_confs = yaml.safe_load(f)
 available_calls = list(model_confs.keys())

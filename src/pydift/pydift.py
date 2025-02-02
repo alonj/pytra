@@ -9,7 +9,7 @@ import subprocess
 import datetime
 import yaml
 from .model_calls import generic_call
-from .pytra_tui import tui
+from .pydift_tui import tui
 
 
 def call_llm_for_summary(diff_text):
@@ -29,28 +29,28 @@ The following is the diff generated from a new version of a code file. If there 
     return generic_call(prompt, model)
 
 # --------------------------------------------------------------------
-# Main pytra code
+# Main pydift code
 # --------------------------------------------------------------------
 def main():
     """
-    Main entry point for pytra.
+    Main entry point for pydift.
 
     This script is a simple version-tracking tool for research code development.
 
     Usage:
-        pytra.py script.py
-        pytra.py script.py --summary # Send the diff to an LLM for a summary.
-        pytra.py script.py --wide   # Track all files in the current directory.
-        pytra.py script.py --recursive  # Track all files in the current directory and subdirectories.
-        pytra.py --tui  # Launch the pytra TUI.
+        pydift.py script.py
+        pydift.py script.py --summary # Send the diff to an LLM for a summary.
+        pydift.py script.py --wide   # Track all files in the current directory.
+        pydift.py script.py --recursive  # Track all files in the current directory and subdirectories.
+        pydift.py --tui  # Launch the pydift TUI.
     """
-    # pytra conf should be in hidden folder in the user directory
-    conf_path = os.path.join(os.path.expanduser("~"), ".pytra")
+    # pydift conf should be in hidden folder in the user directory
+    conf_path = os.path.join(os.path.expanduser("~"), ".pydift")
     # make sure the conf folder exists
     if not os.path.exists(conf_path):
         os.makedirs(conf_path)
     # make sure the conf file exists
-    conf_file_path = os.path.join(conf_path, "pytra_conf.yaml")
+    conf_file_path = os.path.join(conf_path, "pydift_conf.yaml")
     if not os.path.exists(conf_file_path):
         default_config = {
             "model": "Meta Llama 3.3",
@@ -82,7 +82,7 @@ def main():
     parser.add_argument("-r", "--recursive", action="store_true", 
                         help="If set, track all files in the current directory and subdirectories (supercedes '-w,--wide').")
     parser.add_argument("-t", "--tui", action="store_true", 
-                        help="If set, launch the pytra TUI.")
+                        help="If set, launch the pydift TUI.")
     args, unknown_args = parser.parse_known_args()
     script_to_run = args.script_path
     
@@ -92,11 +92,13 @@ def main():
         unknown_args = unknown_args[1:]
 
     # working dir is the directory of the script to run if given, else cwd
-    if script_to_run:
+    if os.path.isdir(script_to_run): # if script_path is a directory
+        wd = script_to_run
+        args.tui = True
+    elif script_to_run:
         wd = os.path.dirname(script_to_run)
     else:
         wd = os.getcwd()
-
     # If TUI is requested, launch it
     if args.tui:
         tui(wd)
@@ -104,13 +106,13 @@ def main():
 
     generate_summary = args.summary
 
-    # Ensure .pytra folder structure exists
-    pytra_dir = os.path.join(wd, ".pytra")
-    versions_dir = os.path.join(pytra_dir, "versions")
-    diffs_file = os.path.join(pytra_dir, "diffs.jsonl")
+    # Ensure .pydift folder structure exists
+    pydift_dir = os.path.join(wd, ".pydift")
+    versions_dir = os.path.join(pydift_dir, "versions")
+    diffs_file = os.path.join(pydift_dir, "diffs.jsonl")
 
-    if not os.path.exists(pytra_dir):
-        os.makedirs(pytra_dir)
+    if not os.path.exists(pydift_dir):
+        os.makedirs(pydift_dir)
     if not os.path.exists(versions_dir):
         os.makedirs(versions_dir)
 
@@ -206,7 +208,7 @@ def main():
 
     # Run the script via python
     #    Pass along any extra arguments to the script if needed (unknown_args).
-    #    For example: pytra script.py --summary -- some_arg --some_option
+    #    For example: pydift script.py --summary -- some_arg --some_option
     #    We pass `unknown_args` after script_to_run.
     command = [sys.executable, script_to_run] + unknown_args
 

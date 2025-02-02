@@ -11,7 +11,7 @@ blue = lambda text: f"\033[94m{text}\033[0m"
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def load_diffs(ppath, log_path=".pytra/diffs.jsonl"):
+def load_diffs(ppath, log_path=".pydift/diffs.jsonl"):
     full_log_path = os.path.join(ppath, log_path)
     if not os.path.exists(full_log_path):
         return []
@@ -24,7 +24,7 @@ def load_diffs(ppath, log_path=".pytra/diffs.jsonl"):
                 pass
     return entries
 
-def reconstruct_code(diff_entry, ppath, versions_dir=".pytra/versions"):
+def reconstruct_code(diff_entry, ppath, versions_dir=".pydift/versions"):
     """
     Given a diff timestamp, create a new script file with the
     same name plus a timestamp suffix, and apply all recorded
@@ -61,8 +61,8 @@ def reconstruct_code(diff_entry, ppath, versions_dir=".pytra/versions"):
     print(f"Reconstructed {new_file} from history up to {target_timestamp}")
 
 def tui(ppath):
-    global pytra_conf_path
-    pytra_conf_path = os.path.join(os.path.expanduser("~"), ".pytra/pytra_conf.yaml")
+    global pydift_conf_path
+    pydift_conf_path = os.path.join(os.path.expanduser("~"), ".pydift/pydift_conf.yaml")
 
     diffs = load_diffs(ppath)
     if not diffs:
@@ -92,13 +92,13 @@ def tui(ppath):
             while True:
                 clear_screen()
                 chosen_conf_index = inquirer.select(
-                    message="Configure Pytra default parameters:",
+                    message="Configure pydift default parameters:",
                     choices=conf_options
                 ).execute()
                 if chosen_conf_index == "Back":
                     clear_screen()
                     break
-                with open(pytra_conf_path, "r") as f:
+                with open(pydift_conf_path, "r") as f:
                     current_conf = yaml.safe_load(f)
                 if chosen_conf_index == "Model":
                     current_settings = current_conf.get("model", "Not set!")
@@ -112,10 +112,10 @@ def tui(ppath):
                     if chosen_call == "Back":
                         continue
                     chosen_call_idx = model_choices.index(chosen_call)-1
-                    with open(pytra_conf_path, "r") as f:
+                    with open(pydift_conf_path, "r") as f:
                         current_conf = yaml.safe_load(f)
                         current_conf["model"] = available_calls[chosen_call_idx]
-                    with open(pytra_conf_path, "w") as f:
+                    with open(pydift_conf_path, "w") as f:
                         yaml.dump(current_conf, f)
                     input("\n"+blue("Press Enter to continue..."))
                 elif chosen_conf_index == "Summary":
@@ -128,10 +128,10 @@ def tui(ppath):
                     ).execute()
                     if chosen_summary == "Back":
                         continue
-                    with open(pytra_conf_path, "r") as f:
+                    with open(pydift_conf_path, "r") as f:
                         current_conf = yaml.safe_load(f)
                         current_conf["summary"] = chosen_summary == "True"
-                    with open(pytra_conf_path, "w") as f:
+                    with open(pydift_conf_path, "w") as f:
                         yaml.dump(current_conf, f)
                     input("\n"+blue("Press Enter to continue..."))
                 elif chosen_conf_index == "Wide":
@@ -144,10 +144,10 @@ def tui(ppath):
                     ).execute()
                     if chosen_wide == "Back":
                         continue
-                    with open(pytra_conf_path, "r") as f:
+                    with open(pydift_conf_path, "r") as f:
                         current_conf = yaml.safe_load(f)
                         current_conf["wide"] = chosen_wide == "True"
-                    with open(pytra_conf_path, "w") as f:
+                    with open(pydift_conf_path, "w") as f:
                         yaml.dump(current_conf, f)
                     input("\n"+blue("Press Enter to continue..."))
                 elif chosen_conf_index == "Recursive":
@@ -160,10 +160,10 @@ def tui(ppath):
                     ).execute()
                     if chosen_recursive == "Back":
                         continue
-                    with open(pytra_conf_path, "r") as f:
+                    with open(pydift_conf_path, "r") as f:
                         current_conf = yaml.safe_load(f)
                         current_conf["recursive"] = chosen_recursive == "True"
-                    with open(pytra_conf_path, "w") as f:
+                    with open(pydift_conf_path, "w") as f:
                         yaml.dump(current_conf, f)
                     input("\n"+blue("Press Enter to continue..."))
             continue

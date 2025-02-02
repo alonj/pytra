@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pytra",
+    name="pydift",
     version="0.1.0",
     description="A simple version-tracking tool for research code development.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/alonj/pytra",
+    url="https://github.com/alonj/pydift",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
@@ -17,7 +17,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "pytra=pytra.pytra:main",
+            "pydift=pydift.pydift:main",
         ],
     },
     classifiers=[
