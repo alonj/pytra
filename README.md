@@ -25,29 +25,34 @@ pip install -r requirements.txt
 You can use pydift from the command line to track and run your scripts. Here are some examples:
 ```sh
 # Track and run a script
-python pydift.py script.py
+pydift script.py
+pydift -p script.py
+pydift --path script.py
 
 # Track and run a script, and generate a summary of the diff
-python pydift.py script.py --summary
+pydift -s script.py
+pydift --summary script.py
 
 # Track all files in the current directory
-python pydift.py script.py --wide
+pydift -w script.py
+pydift --wide script.py
 
 # Track all files in the current directory and subdirectories
-python pydift.py script.py --recursive
+pydift -r script.py
+pydift --recursive script.py
 
 # Launch the pydift TUI
-python pydift.py --tui
+pydift
+pydift -t
+pydift --tui
+pydift path/to/folder
 ```
 
 ### Text User Interface (TUI)
 pydift also provides an interactive TUI for managing diffs and configurations. To launch the TUI, run:
 ```sh
-python pydift.py --tui
-```
-or simply:
-```sh
-python pydift.py -t
+pydift --tui
+pydift -t
 ```
 
 In the TUI, you can:

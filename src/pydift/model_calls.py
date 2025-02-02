@@ -4,8 +4,18 @@ from copy import deepcopy
 global available_calls
 global model_confs
 
-model_conf_path = os.path.join(os.path.expanduser("~"), ".pydift/model_conf.yaml")
-with open(model_conf_path, "r") as f:
+user_model_conf_path = os.path.join(os.path.expanduser("~"), ".pydift/model_conf.yaml")
+known_conf_path = os.path.join(os.path.dirname(__file__), 'data', "model_conf.yaml")
+
+# check if model_conf.yaml exists in the user pydift folder
+if not os.path.exists(user_model_conf_path):
+    # if not, copy from the package data
+    with open(known_conf_path, "r") as f:
+        custom_conf = yaml.safe_load(f)
+    with open(user_model_conf_path, "w") as f:
+        yaml.dump(custom_conf, f)
+
+with open(user_model_conf_path, "r") as f:
     model_confs = yaml.safe_load(f)
 available_calls = list(model_confs.keys())
 

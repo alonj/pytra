@@ -44,7 +44,6 @@ def main():
         pydift.py script.py --recursive  # Track all files in the current directory and subdirectories.
         pydift.py --tui  # Launch the pydift TUI.
     """
-    # pydift conf should be in hidden folder in the user directory
     conf_path = os.path.join(os.path.expanduser("~"), ".pydift")
     # make sure the conf folder exists
     if not os.path.exists(conf_path):

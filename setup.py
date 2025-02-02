@@ -10,6 +10,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
+    package_data={'pydift': ['**/*.yml']},
     install_requires=[
         "InquirerPy==0.3.4",
         "PyYAML==6.0.2",
