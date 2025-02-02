@@ -4,6 +4,8 @@ pydift is a simple version-tracking tool for research code development. It allow
 
 ![pydift TUI](figures/demo.gif)
 
+Current version: 0.1.1
+
 ## Features
 
 - Track changes in your Python scripts.
